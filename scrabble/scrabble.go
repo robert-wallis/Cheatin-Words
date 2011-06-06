@@ -53,9 +53,9 @@ func Permutations(n int) chan []int {
 
 // changes the order of the sequence in memory to the next permutation
 func nextPermutation(seq []int) bool {
-	for j := len(seq)-1; j > 0; j-- {
+	for j := len(seq) - 1; j > 0; j-- {
 		if v := seq[j-1]; v < seq[j] {
-			m := len(seq)-1
+			m := len(seq) - 1
 			for v > seq[m] {
 				m--
 			}
