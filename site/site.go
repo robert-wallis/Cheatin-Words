@@ -29,12 +29,12 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // quickly calculate
-func factorial(length int) (int) {
+func factorial(length int) int {
 	result := length
 	for i := length; i > 1; i-- {
-		result *= i-1
+		result *= i - 1
 	}
-	return result;
+	return result
 }
 
 func renderTemplate(w http.ResponseWriter, filename string, context interface{}) {
@@ -47,4 +47,3 @@ func renderTemplate(w http.ResponseWriter, filename string, context interface{})
 		http.Error(w, err.String(), http.StatusInternalServerError)
 	}
 }
-

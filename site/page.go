@@ -6,11 +6,10 @@ import (
 )
 
 type Page struct {
-	filename	string
+	filename string
 }
 
 func (p *Page) Load(filename string) (t *template.Template, err os.Error) {
 	p.filename = filename
 	return template.ParseFile(p.filename, nil)
 }
-
