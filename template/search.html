@@ -1,10 +1,20 @@
 <html>
 <head>
-	<title>cheatin' words</title>
+	<title>{Q|html} | cheatin' words</title>
 	<link href="default.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<h1>cheatin' words</h1>
+	<h2>search results for &quot;{Q|html}&quot;</h2>
+	{.section Permutations}
+	<div id="results">
+		<ul>
+		{.repeated section @}
+			<li>{@}</li>
+		{.end}
+		</ul>
+	</div>
+	{.end}
 
 	<div class="query">
 		<form action="/search">

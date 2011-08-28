@@ -6,5 +6,6 @@ import (
 
 func init() {
 	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/search", searchHandler)
 }
 
