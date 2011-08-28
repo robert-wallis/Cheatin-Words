@@ -1,24 +1,25 @@
 <html>
 <head>
 	<title>words with cheaters</title>
+	<link href="default.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-
-{.section Permutations}
-<div id="results">
-	<ul>
-	{.repeated section @}
-		<li>{@}</li>
+	<h1>cheatin' words</h1>
+	{.section Permutations}
+	<div id="results">
+		<ul>
+		{.repeated section @}
+			<li>{@}</li>
+		{.end}
+		</ul>
+	</div>
 	{.end}
-	</ul>
-</div>
-{.end}
 
-<div class="query">
-	<form>
-		<input type="text" name="q">
-		<input type="submit">
-	</form>
-</div>
+	<div class="query">
+		<form>
+			<input type="text" name="q">
+			<input type="submit">
+		</form>
+	</div>
 
 </body>

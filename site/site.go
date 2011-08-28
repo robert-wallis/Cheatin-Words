@@ -1,7 +1,6 @@
 package site
 
 import (
-	"fmt"
 	"http"
 	"scrabble"
 )
@@ -27,7 +26,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	renderTemplate(w, "template/index.html", context)
-	fmt.Fprint(w, "site page")
 }
 
 // quickly calculate
