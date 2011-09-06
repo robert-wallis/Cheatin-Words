@@ -3,7 +3,7 @@ package site
 import (
 	"http"
 	"fmt"
-	"scrabble"
+	"word"
 )
 
 type Search struct {
@@ -26,7 +26,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		if len(query) > 8 {
 			query = query[0:8]
 		}
-		channel := scrabble.StringPermutations(query)
+		channel := word.StringPermutations(query)
 		for p := range channel {
 			context.Permutations = append(context.Permutations, p)
 		}

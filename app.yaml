@@ -4,9 +4,9 @@ runtime: go
 api_version: 2
 
 handlers:
-- url: /(.+\.(css|gif|ico|jpg|js|png))
+- url: /(.+\.(css|gif|html|ico|jpg|js|png|txt))
   static_files: static/\1
-  upload: static/(.+\.(css|gif|ico|jpg|js|png))
+  upload: static/(.+\.(css|gif|html|ico|jpg|js|png|txt))
 
 - url: .*
   script: _go_app

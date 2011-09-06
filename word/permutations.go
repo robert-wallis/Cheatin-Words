@@ -1,4 +1,4 @@
-package scrabble
+package word
 
 import (
 	"sort"
