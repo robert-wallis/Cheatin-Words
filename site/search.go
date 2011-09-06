@@ -1,8 +1,9 @@
 package site
 
 import (
-	"http"
 	"fmt"
+	"http"
+	"strings"
 	"word"
 )
 
@@ -14,10 +15,19 @@ type Search struct {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("q")
+
+	// max 8 letters
 	if len(query) > 8 {
 		query = query[0:8]
 		http.Redirect(w, r, fmt.Sprintf("search?q=%s", query), 302)
+		return
 	}
+	// lowercase only
+	if query != strings.ToLower(query) {
+		http.Redirect(w, r, fmt.Sprintf("search?q=%s", strings.ToLower(query)), 302)
+		return
+	}
+
 	context := &Search{
 		Filename: "template/search.html",
 		Q: query,
@@ -32,14 +42,5 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	TemplateRender(w, context.Filename, context)
-}
-
-// quickly calculate
-func factorial(length int) int {
-	result := length
-	for i := length; i > 1; i-- {
-		result *= i - 1
-	}
-	return result
 }
 
