@@ -2,6 +2,7 @@ package site
 
 import (
 	"http"
+	"fmt"
 	"scrabble"
 )
 
@@ -13,17 +14,21 @@ type Search struct {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("q")
+	if len(query) > 8 {
+		query = query[0:8]
+		http.Redirect(w, r, fmt.Sprintf("search?q=%s", query), 302)
+	}
 	context := &Search{
 		Filename: "template/search.html",
 		Q: query,
 	}
 	if 0 != len(query) {
-		context.Permutations = make([]string, factorial(len(query)))
+		if len(query) > 8 {
+			query = query[0:8]
+		}
 		channel := scrabble.StringPermutations(query)
-		i := 0
 		for p := range channel {
-			context.Permutations[i] = p
-			i++
+			context.Permutations = append(context.Permutations, p)
 		}
 	}
 	TemplateRender(w, context.Filename, context)
