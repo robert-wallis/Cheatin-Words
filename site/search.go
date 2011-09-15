@@ -8,8 +8,8 @@ import (
 )
 
 type Search struct {
-	Filename string
-	Q string
+	Filename     string
+	Q            string
 	Permutations []string
 }
 
@@ -30,7 +30,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	context := &Search{
 		Filename: "template/search.html",
-		Q: query,
+		Q:        query,
 	}
 	if 0 != len(query) {
 		if len(query) > 8 {
@@ -43,4 +43,3 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	TemplateRender(w, context.Filename, context)
 }
-

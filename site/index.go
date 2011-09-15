@@ -9,7 +9,6 @@ type Index struct {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	context := &Index{ Filename:"template/index.html" }
+	context := &Index{Filename: "template/index.html"}
 	TemplateRender(w, context.Filename, context)
 }
-
