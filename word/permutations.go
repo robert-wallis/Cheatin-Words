@@ -32,23 +32,34 @@ func Permute(data sort.Interface) bool {
 	return true
 }
 
-type byteSlice []byte
-func (p byteSlice) Len() int           { return len(p) }
-func (p byteSlice) Less(i, j int) bool { return p[i] < p[j] }
-func (p byteSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+// Byte Slice ----------------------------------------------------------------
+type ByteSlice []byte
+
+func (p ByteSlice) Len() int           { return len(p) }
+func (p ByteSlice) Less(i, j int) bool { return p[i] < p[j] }
+func (p ByteSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+func ByteSliceFromString(s string) ByteSlice {
+	b := make(ByteSlice, len(s))
+	copy(b, s)
+	return b
+}
+func StringFromByteSlice(b ByteSlice) string {
+	return string([]byte(b))
+}
+// ---------------------------------------------------------------------------
 
 // returns a channel of all the possible permutations of a string
 func StringPermutations(s string) chan string {
 	out := make(chan string)
 	go func() {
 		// make a mutable string
-		ss := make(byteSlice, len(s))
-		copy(ss, s)
+		b := ByteSliceFromString(s)
 		// start the permutations at the beginning
-		sort.Sort(ss)
+		sort.Sort(b)
 		for {
-			out <- string([]byte(ss))
-			if ok := Permute(ss); !ok {
+			out <- StringFromByteSlice(b)
+			if ok := Permute(b); !ok {
 				break
 			}
 		}
@@ -56,4 +67,3 @@ func StringPermutations(s string) chan string {
 	}()
 	return out
 }
-
