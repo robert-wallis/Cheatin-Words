@@ -32,20 +32,21 @@ func Permute(data sort.Interface) bool {
 	return true
 }
 
-// Byte Slice ----------------------------------------------------------------
-type ByteSlice []byte
+// IntSlice attaches the methods of Interface to []int, sorting in increasing order.
+// from new sort, but not in google_appengine_go sort
+type IntSlice []int
 
-func (p ByteSlice) Len() int           { return len(p) }
-func (p ByteSlice) Less(i, j int) bool { return p[i] < p[j] }
-func (p ByteSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p IntSlice) Len() int           { return len(p) }
+func (p IntSlice) Less(i, j int) bool { return p[i] < p[j] }
+func (p IntSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
-func ByteSliceFromString(s string) ByteSlice {
-	b := make(ByteSlice, len(s))
-	copy(b, s)
-	return b
+// Sort is a convenience method.
+func (p IntSlice) Sort() { sort.Sort(p) }
+func IntSliceFromString(s string) IntSlice {
+	return []int(s)
 }
-func StringFromByteSlice(b ByteSlice) string {
-	return string([]byte(b))
+func StringFromIntSlice(i IntSlice) string {
+	return string([]int(i))
 }
 // ---------------------------------------------------------------------------
 
@@ -54,11 +55,11 @@ func StringPermutations(s string) chan string {
 	out := make(chan string)
 	go func() {
 		// make a mutable string
-		b := ByteSliceFromString(s)
+		b := IntSliceFromString(s)
 		// start the permutations at the beginning
 		sort.Sort(b)
 		for {
-			out <- StringFromByteSlice(b)
+			out <- StringFromIntSlice(b)
 			if ok := Permute(b); !ok {
 				break
 			}

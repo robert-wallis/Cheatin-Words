@@ -15,9 +15,9 @@ type Search struct {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("q")
-
+	queryLength := len([]int(query)) // unicode length
 	// max 8 letters
-	if len(query) > 8 {
+	if queryLength > 8 {
 		query = query[0:8]
 		http.Redirect(w, r, fmt.Sprintf("search?q=%s", query), 302)
 		return
@@ -32,8 +32,9 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		Filename: "template/search.html",
 		Q:        query,
 	}
-	if 0 != len(query) {
-		if len(query) > 8 {
+
+	if 0 != queryLength {
+		if queryLength > 8 {
 			query = query[0:8]
 		}
 		channel := word.StringPermutations(query)
