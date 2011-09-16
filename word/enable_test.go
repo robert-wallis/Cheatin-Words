@@ -1,0 +1,5 @@
+package word
+
+import (
+	"testing"
+)
