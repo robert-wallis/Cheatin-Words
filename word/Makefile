@@ -2,7 +2,7 @@ include $(GOROOT)/src/Make.inc
 
 TARG=word
 GOFILES=\
-	dict.go\
+	enable.go\
 	permutations.go
 
 include $(GOROOT)/src/Make.pkg
