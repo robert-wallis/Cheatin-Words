@@ -5,15 +5,35 @@ import (
 	"os"
 )
 
-type Range struct {
-	Start, End int64
+// ***************************************************************************
+
+type WordList struct {
+	words []string
 }
 
+func (p *WordList) Append(word string) {
+	p.words = append(p.words, word)
+}
+
+func (p *WordList) WordInList(word string) bool {
+	for _, w := range p.words {
+		if w == word {
+			return true
+		}
+	}
+	return false
+}
+
+// ***************************************************************************
+
 type Enable struct {
-	m        map[int]Range
+	mapWords map[int]WordList
 	filename string
 }
 
+// singleton so more than one AppEngine request doesn't have to reload the file
+// this should be in the AppEngine specific area, not here, because
+// singletons are evil.  TODO: remove singleton
 var singleton *Enable
 
 func Factory(filename string) *Enable {
@@ -28,14 +48,13 @@ func Factory(filename string) *Enable {
 
 // find at what seek point all the letters start
 func (p *Enable) loadDictionary() {
-	p.m = make(map[int]Range, 26)
+	p.mapWords = make(map[int]WordList, 26)
 	stream, err := os.OpenFile(p.filename, os.O_RDONLY, 0)
 	defer stream.Close()
 	if err != nil {
 		log.Fatalf("failed to load dictionary %q", err)
 	}
 	pos := 0
-	var lastChar int = 0
 	start := true // first byte read is an index
 	bufferSize := 4096
 	buffer := make([]byte, bufferSize)
@@ -55,19 +74,7 @@ func (p *Enable) loadDictionary() {
 				continue
 			} else if start && len(word) > 0 {
 				start = false
-				// check for save
-				unicodeWord := []int(string(word)) // use []int instead of []byte to make unicode
-				if lastChar != unicodeWord[0] {
-					// new char, time to save from the buffer's start + i - the beginning of this word in bytes
-					startIndex := pos + i - len(word)
-					// save
-					p.m[unicodeWord[0]] = Range{int64(startIndex), 0}
-					// modify previous range with end point
-					p.updatePreviousEnd(lastChar, int64(startIndex-1))
-					// save to compare with the next word
-					lastChar = unicodeWord[0]
-				}
-				// if it was or wasn't this word, doesn't matter, new word
+				p.AddWord(string(word))
 				word = make([]byte, 0)
 			}
 			// append any character that fell through
@@ -75,17 +82,16 @@ func (p *Enable) loadDictionary() {
 		}
 		pos += cbuffer
 	}
-	p.updatePreviousEnd(lastChar, int64(pos))
+	p.AddWord(string(word))
 }
 
-func (p *Enable) updatePreviousEnd(i int, end int64) {
-	r, ok := p.m[i]
-	if !ok {
-		return
-	}
-	r.End = end
-	p.m[i] = r
+func (p *Enable) AddWord(word string) {
+	unicodeWord := []int(string(word)) // use []int instead of []byte to make unicode
+	wl := p.mapWords[unicodeWord[0]]
+	wl.Append(word)
+	p.mapWords[unicodeWord[0]] = wl
 }
+
 
 // is this word in the Enable dictionary?
 func (p *Enable) WordIsValid(query string) bool {
@@ -94,59 +100,9 @@ func (p *Enable) WordIsValid(query string) bool {
 	}
 	unicodeQuery := []int(query)
 	thisChar := unicodeQuery[0]
-	if p.m == nil {
+	if p.mapWords == nil {
 		log.Fatalf("dicationary not loaded, enable needs Init() %q", p)
 	}
-	r, ok := p.m[thisChar]
-	if !ok {
-		// word not in the index, therefore also not in dictionary
-		return false
-	}
-	stream, err := os.OpenFile(p.filename, os.O_RDONLY, 0)
-	defer stream.Close()
-	if err != nil {
-		log.Fatalf("failed to load dictionary %q", err)
-		return false
-	}
-	pos, err := stream.Seek(r.Start, 0)
-	if err != nil {
-		log.Fatalf("couldn't seek to %d in index for %s %q", r.Start, string(thisChar), err)
-		return false
-	}
-	start := true
-	bufferSize := 4096
-	buffer := make([]byte, bufferSize)
-	word := make([]byte, 0)
-	for {
-		cbuffer, err := stream.Read(buffer)
-		if cbuffer == 0 || err == os.EOF {
-			break
-		} else if err != nil {
-			log.Fatalf("failed to read from dictionary %q", err)
-			return false
-		}
-		for i := 0; i < cbuffer; i++ {
-			if buffer[i] == '\n' || buffer[i] == '\r' || buffer[i] == 0 {
-				// next is a start
-				start = true
-				continue
-			} else if start && len(word) > 0 {
-				start = false
-				// check for save
-				if string(word) == query {
-					return true
-				}
-				// it wasn't this word, new word
-				word = make([]byte, 0)
-			}
-			// append any character that fell through
-			word = append(word, buffer[i])
-		}
-		pos += int64(cbuffer)
-	}
-	// check the very last word at the EOF
-	if string(word) == query {
-		return true
-	}
-	return false
+	wl := p.mapWords[thisChar]
+	return wl.WordInList(query)
 }
