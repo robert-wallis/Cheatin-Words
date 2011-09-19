@@ -37,10 +37,11 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		if queryLength > 8 {
 			query = query[0:8]
 		}
-		word.Init("static/enable.txt")
+		// make sure enable is loaded
+		e := word.Factory("static/enable.txt")
 		channel := word.StringPermutations(query)
 		for p := range channel {
-			if !word.StringInEnable(p) {
+			if !e.WordIsValid(p) {
 				continue
 			}
 			context.Permutations = append(context.Permutations, p)

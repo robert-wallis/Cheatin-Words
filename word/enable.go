@@ -16,14 +16,14 @@ type Enable struct {
 
 var singleton *Enable
 
-func (p *Enable) Init(filename string) {
+func Factory(filename string) *Enable {
 	if singleton != nil {
-		return
+		return singleton
 	}
-	p.filename = filename
-	p.loadDictionary()
-	singleton = p
-	return
+	singleton = new(Enable)
+	singleton.filename = filename
+	singleton.loadDictionary()
+	return singleton
 }
 
 // find at what seek point all the letters start
@@ -76,7 +76,6 @@ func (p *Enable) loadDictionary() {
 		pos += cbuffer
 	}
 	p.updatePreviousEnd(lastChar, int64(pos))
-	log.Printf("%d word positions found\n", len(p.m))
 }
 
 func (p *Enable) updatePreviousEnd(i int, end int64) {
@@ -86,7 +85,6 @@ func (p *Enable) updatePreviousEnd(i int, end int64) {
 	}
 	r.End = end
 	p.m[i] = r
-	log.Printf("%s = (%d, %d)\n", string(i), r.Start, r.End)
 }
 
 // is this word in the Enable dictionary?
@@ -96,6 +94,9 @@ func (p *Enable) WordIsValid(query string) bool {
 	}
 	unicodeQuery := []int(query)
 	thisChar := unicodeQuery[0]
+	if p.m == nil {
+		log.Fatalf("dicationary not loaded, enable needs Init() %q", p)
+	}
 	r, ok := p.m[thisChar]
 	if !ok {
 		// word not in the index, therefore also not in dictionary

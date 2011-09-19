@@ -22,8 +22,7 @@ var invalidWords = []string{
 }
 
 func TestLoad(t *testing.T) {
-	e := new(Enable)
-	e.Init("../static/enable.txt")
+	e := Factory("../static/enable.txt")
 	for _, word := range validWords {
 		fmt.Printf("%s ", word)
 		if !e.WordIsValid(word) {
