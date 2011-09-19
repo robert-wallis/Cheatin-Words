@@ -6,7 +6,7 @@ import (
 
 type permuteTest struct {
 	in, out IntSlice
-	ret     bool	// are there more permutations after this?
+	ret     bool // are there more permutations after this?
 }
 
 var permuteTests = []*permuteTest{
@@ -32,15 +32,33 @@ func TestPermute(t *testing.T) {
 	for _, pt := range permuteTests {
 		ret := Permute(pt.in)
 		if ret != pt.ret {
-			t.Errorf("expected Permute() return %q, got %q", pt.ret, ret)
+			t.Errorf("expected return %q, got %q", pt.ret, ret)
 		}
 		if len(pt.in) != len(pt.out) {
-			t.Errorf("expeted Permute to have %d length, but had %d", len(pt.in), len(pt.out))
+			t.Errorf("expeted to have %d length, but had %d", len(pt.in), len(pt.out))
 		}
 		for i, v := range pt.in {
 			if pt.out[i] != v {
-				t.Errorf("expected Permute() index %d to be %q, but got %q", i, v, pt.out[i])
+				t.Errorf("expected index %d to be %q, but got %q", i, v, pt.out[i])
 			}
 		}
 	}
 }
+
+var permuteTests1234sub2 = []string{
+	"12", "13", "14",
+	"21", "23", "24",
+	"31", "32", "34",
+	"41", "42", "43",
+}
+
+func Test1234sub2(t *testing.T) {
+	c := StringPermutationsSub("1234", 2)
+	for _, v := range permuteTests1234sub2 {
+		x := <-c
+		if v != x {
+			t.Errorf("expected %s channel returned %s", v, x)
+		}
+	}
+}
+
