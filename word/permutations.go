@@ -48,25 +48,24 @@ func StringFromIntSlice(i IntSlice) string {
 }
 // ---------------------------------------------------------------------------
 
-// returns a channel of all the possible permutations of a string
+// Returns a channel of all the possible permutations of a string
+// including all lenthgs of sub-strings that only include some characters.
 func StringPermutations(s string) chan string {
 	out := make(chan string)
 	go func() {
-		// make a mutable string
-		b := IntSliceFromString(s)
-		// start the permutations at the beginning
-		sort.Sort(b)
-		for {
-			out <- StringFromIntSlice(b)
-			if ok := Permute(b); !ok {
-				break
+		defer close(out)
+		for r := len(s); r > 0; r-- {
+			c := StringPermutationsSub(s, r)
+			for w := range c {
+				out <- w
 			}
 		}
-		close(out)
 	}()
 	return out
 }
 
+// Returns a channel of all the possible permutations of a string containing
+// r length in characters.
 // adopted from http://docs.python.org/library/itertools.html
 func StringPermutationsSub(s string, r int) chan string {
 	out := make(chan string)
@@ -142,4 +141,3 @@ func StringPermutationsSub(s string, r int) chan string {
 	}()
 	return out
 }
-

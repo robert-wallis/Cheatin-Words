@@ -62,3 +62,33 @@ func Test1234sub2(t *testing.T) {
 	}
 }
 
+var permuteTests1234All = []string{
+	"1234", "1243", "1324", "1342", "1423", "1432",
+	"2134", "2143","2314", "2341", "2413", "2431",
+	"3124", "3142", "3214", "3241", "3412", "3421",
+	"4123", "4132", "4213", "4231", "4312", "4321",
+	"123", "124", "132", "134", "142", "143",
+	"213", "214", "231", "234", "241", "243",
+	"312", "314", "321", "324", "341", "342",
+	"412", "413", "421", "423", "431", "432",
+	"12", "13", "14",
+	"21", "23", "24",
+	"31", "32", "34",
+	"41", "42", "43",
+	"1", "2", "3", "4",
+}
+
+func Test1234All(t *testing.T) {
+	c := StringPermutations("1234")
+	i := 0;
+	for x := range c {
+		if permuteTests1234All[i] != x {
+			t.Errorf("expecting %s channel returned %s", permuteTests1234All[i], x)
+		}
+		i++
+	}
+	if i != len(permuteTests1234All) {
+		t.Errorf("expecting more results, but channel closed after %d results", i)
+	}
+}
+
