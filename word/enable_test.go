@@ -1,9 +1,10 @@
 package word
 
 import (
-	"fmt"
 	"testing"
 )
+
+var enableFilename = "../static/enable.txt"
 
 var validWords = []string{
 	// regular words
@@ -22,19 +23,39 @@ var invalidWords = []string{
 }
 
 func TestLoad(t *testing.T) {
-	e := Factory("../static/enable.txt")
+	e := Factory(enableFilename)
 	for _, word := range validWords {
-		fmt.Printf("%s ", word)
 		if !e.WordIsValid(word) {
 			t.Errorf("%s was supposed to be in the dictionary\n", word)
 		}
-		fmt.Printf("\n")
 	}
 	for _, word := range invalidWords {
-		fmt.Printf("%s ", word)
 		if e.WordIsValid(word) {
 			t.Errorf("%s was NOT supposed to be in the dictionary\n", word)
 		}
-		fmt.Printf("\n")
+	}
+}
+
+func BenchmarkLoad(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Factory(enableFilename)
+	}
+}
+
+func BenchmarkSearchLast(b *testing.B) {
+	b.StopTimer()
+	e := Factory(enableFilename)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		e.WordIsValid("zyzzyvas")
+	}
+}
+
+func BenchmarkSearchFail(b *testing.B) {
+	b.StopTimer()
+	e := Factory(enableFilename)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		e.WordIsValid("yourmommaz")
 	}
 }

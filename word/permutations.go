@@ -35,13 +35,10 @@ func Permute(data sort.Interface) bool {
 // IntSlice attaches the methods of Interface to []int, sorting in increasing order.
 // from new sort, but not in google_appengine_go sort
 type IntSlice []int
-
 func (p IntSlice) Len() int           { return len(p) }
 func (p IntSlice) Less(i, j int) bool { return p[i] < p[j] }
 func (p IntSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
-// Sort is a convenience method.
-func (p IntSlice) Sort() { sort.Sort(p) }
 func IntSliceFromString(s string) IntSlice {
 	return []int(s)
 }
