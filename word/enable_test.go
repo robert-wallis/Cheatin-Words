@@ -23,7 +23,8 @@ var invalidWords = []string{
 }
 
 func TestLoad(t *testing.T) {
-	e := Factory(enableFilename)
+	e := new(Enable)
+	e.Load(enableFilename)
 	for _, word := range validWords {
 		if !e.WordIsValid(word) {
 			t.Errorf("%s was supposed to be in the dictionary\n", word)
@@ -38,13 +39,15 @@ func TestLoad(t *testing.T) {
 
 func BenchmarkLoad(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Factory(enableFilename)
+		e := new(Enable)
+		e.Load(enableFilename)
 	}
 }
 
 func BenchmarkSearchLast(b *testing.B) {
 	b.StopTimer()
-	e := Factory(enableFilename)
+	e := new(Enable)
+	e.Load(enableFilename)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		e.WordIsValid("zyzzyvas")
@@ -53,7 +56,8 @@ func BenchmarkSearchLast(b *testing.B) {
 
 func BenchmarkSearchFail(b *testing.B) {
 	b.StopTimer()
-	e := Factory(enableFilename)
+	e := new(Enable)
+	e.Load(enableFilename)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		e.WordIsValid("yourmommaz")

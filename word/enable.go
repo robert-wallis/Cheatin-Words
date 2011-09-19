@@ -31,28 +31,15 @@ type Enable struct {
 	filename string
 }
 
-// singleton so more than one AppEngine request doesn't have to reload the file
-// this should be in the AppEngine specific area, not here, because
-// singletons are evil.  TODO: remove singleton
-var singleton *Enable
-
-func Factory(filename string) *Enable {
-	if singleton != nil {
-		return singleton
-	}
-	singleton = new(Enable)
-	singleton.filename = filename
-	singleton.loadDictionary()
-	return singleton
-}
-
 // find at what seek point all the letters start
-func (p *Enable) loadDictionary() {
+func (p *Enable) Load(filename string) bool {
+	p.filename = filename
 	p.mapWords = make(map[int]WordList, 26)
 	stream, err := os.OpenFile(p.filename, os.O_RDONLY, 0)
 	defer stream.Close()
 	if err != nil {
 		log.Fatalf("failed to load dictionary %q", err)
+		return false
 	}
 	pos := 0
 	start := true // first byte read is an index
@@ -65,7 +52,7 @@ func (p *Enable) loadDictionary() {
 			break
 		} else if err != nil {
 			log.Fatalf("failed to read from dictionary %q", err)
-			return
+			return false
 		}
 		for i := 0; i < cbuffer; i++ {
 			if buffer[i] == '\n' || buffer[i] == '\r' || buffer[i] == 0 {
@@ -83,6 +70,7 @@ func (p *Enable) loadDictionary() {
 		pos += cbuffer
 	}
 	p.AddWord(string(word))
+	return true
 }
 
 func (p *Enable) AddWord(word string) {

@@ -3,6 +3,7 @@ package site
 import (
 	"fmt"
 	"http"
+	"log"
 	"strings"
 	"word"
 )
@@ -12,6 +13,9 @@ type Search struct {
 	Q            string
 	Permutations []string
 }
+
+var enable *word.Enable
+var enablePath = "static/enable.txt"
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("q")
@@ -38,7 +42,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			query = query[0:8]
 		}
 		// make sure enable is loaded
-		e := word.Factory("static/enable.txt")
+		e := loadEnable()
 		channel := word.StringPermutations(query)
 		for p := range channel {
 			if !e.WordIsValid(p) {
@@ -48,4 +52,15 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	TemplateRender(w, context.Filename, context)
+}
+
+// ensure this instance has the Enable dictionary loaded
+func loadEnable() *word.Enable {
+	if enable != nil {
+		return enable
+	}
+	log.Println("Loading dictionary, this query should be .3 seconds slower")
+	enable = new(word.Enable)
+	enable.Load(enablePath)
+	return enable
 }
