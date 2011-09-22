@@ -1,9 +1,11 @@
 package site
 
 import (
+	"appengine"
 	"fmt"
 	"http"
 	"log"
+	"os"
 	"strings"
 	"word"
 )
@@ -18,6 +20,7 @@ var enable *word.Enable
 var enablePath = "static/enable.txt"
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
+	ae := appengine.NewContext(r)
 	query := r.FormValue("q")
 	queryLength := len([]int(query)) // unicode length
 	// max 8 letters
@@ -32,9 +35,10 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	context := &Search{
-		Filename: "template/search.html",
-		Q:        query,
+	context := &Search {
+		Filename:  "template/search.html",
+		Q: query,
+		Permutations: make([]string, 0),
 	}
 
 	if 0 != queryLength {
@@ -42,10 +46,17 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			query = query[0:8]
 		}
 		// make sure enable is loaded
-		e := loadEnable()
+		var e *word.Enable
+		var err os.Error
+		if e, err = loadEnable(); err != nil {
+			ae.Errorf("%v", err)
+		}
 		channel := word.StringPermutations(query)
 		for p := range channel {
-			if !e.WordIsValid(p) {
+			if valid, err := e.WordIsValid(p); !valid || err != nil {
+				if err != nil {
+					ae.Errorf("%v", err)
+				}
 				continue
 			}
 			context.Permutations = append(context.Permutations, p)
@@ -55,12 +66,14 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ensure this instance has the Enable dictionary loaded
-func loadEnable() *word.Enable {
+func loadEnable() (*word.Enable, os.Error) {
 	if enable != nil {
-		return enable
+		return enable, nil
 	}
 	log.Println("Loading dictionary, this query should be .3 seconds slower")
 	enable = new(word.Enable)
-	enable.Load(enablePath)
-	return enable
+	if err := enable.Load(enablePath); err != nil {
+		return nil, err
+	}
+	return enable, nil
 }

@@ -1,7 +1,7 @@
 package word
 
 import (
-	"log"
+	"fmt"
 	"os"
 )
 
@@ -32,14 +32,13 @@ type Enable struct {
 }
 
 // find at what seek point all the letters start
-func (p *Enable) Load(filename string) bool {
+func (p *Enable) Load(filename string) (os.Error) {
 	p.filename = filename
 	p.mapWords = make(map[int]WordList, 26)
 	stream, err := os.OpenFile(p.filename, os.O_RDONLY, 0)
 	defer stream.Close()
 	if err != nil {
-		log.Fatalf("failed to load dictionary %q", err)
-		return false
+		return os.NewError(fmt.Sprintf("failed to load dictionary %q", err))
 	}
 	pos := 0
 	start := true // first byte read is an index
@@ -51,8 +50,7 @@ func (p *Enable) Load(filename string) bool {
 		if cbuffer == 0 || err == os.EOF {
 			break
 		} else if err != nil {
-			log.Fatalf("failed to read from dictionary %q", err)
-			return false
+			return os.NewError(fmt.Sprintf("failed to read from dictionary %q", err))
 		}
 		for i := 0; i < cbuffer; i++ {
 			if buffer[i] == '\n' || buffer[i] == '\r' || buffer[i] == 0 {
@@ -70,7 +68,7 @@ func (p *Enable) Load(filename string) bool {
 		pos += cbuffer
 	}
 	p.AddWord(string(word))
-	return true
+	return nil
 }
 
 func (p *Enable) AddWord(word string) {
@@ -82,15 +80,15 @@ func (p *Enable) AddWord(word string) {
 
 
 // is this word in the Enable dictionary?
-func (p *Enable) WordIsValid(query string) bool {
+func (p *Enable) WordIsValid(query string) (bool, os.Error) {
 	if len(query) == 0 {
-		return false
+		return false, nil
 	}
 	unicodeQuery := []int(query)
 	thisChar := unicodeQuery[0]
 	if p.mapWords == nil {
-		log.Fatalf("dicationary not loaded, enable needs Init() %q", p)
+		return false, os.NewError(fmt.Sprintf("dicationary not loaded, enable needs Init() %q", p))
 	}
 	wl := p.mapWords[thisChar]
-	return wl.WordInList(query)
+	return wl.WordInList(query), nil
 }

@@ -1,6 +1,7 @@
 package word
 
 import (
+	"os"
 	"testing"
 )
 
@@ -24,15 +25,27 @@ var invalidWords = []string{
 
 func TestLoad(t *testing.T) {
 	e := new(Enable)
-	e.Load(enableFilename)
+	if err := e.Load(enableFilename); err != nil {
+		t.Error("unable to load enable for filename %s: %s", enableFilename, err)
+	}
 	for _, word := range validWords {
-		if !e.WordIsValid(word) {
+		valid := true
+		var err os.Error
+		if valid, err = e.WordIsValid(word); !valid {
 			t.Errorf("%s was supposed to be in the dictionary\n", word)
+		}
+		if err != nil {
+			t.Errorf("error searching for %s: %s", word, err)
 		}
 	}
 	for _, word := range invalidWords {
-		if e.WordIsValid(word) {
+		valid := false
+		var err os.Error
+		if valid, err = e.WordIsValid(word); valid {
 			t.Errorf("%s was NOT supposed to be in the dictionary\n", word)
+		}
+		if err != nil {
+			t.Errorf("error searching for %s: %s", word, err)
 		}
 	}
 }
