@@ -17,7 +17,7 @@ type Search struct {
 }
 
 var enable *word.Enable
-var enablePath = "static/enable.txt"
+var enablePath = "enable.txt"
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	ae := appengine.NewContext(r)
@@ -35,11 +35,12 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	context := &Search {
-		Filename:  "template/search.html",
-		Q: query,
+	context := &Search{
+		Filename:     "template/search.html",
+		Q:            query,
 		Permutations: make([]string, 0),
 	}
+	hashTable := make(map[string]byte, 0)
 
 	if 0 != queryLength {
 		if queryLength > 8 {
@@ -56,7 +57,10 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			if valid := e.WordIsValid(p); !valid {
 				continue
 			}
-			context.Permutations = append(context.Permutations, p)
+			if _, inHash := hashTable[p]; !inHash {
+				context.Permutations = append(context.Permutations, p)
+				hashTable[p] = 1
+			}
 		}
 	}
 	TemplateRender(w, context.Filename, context)
