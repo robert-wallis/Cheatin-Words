@@ -53,10 +53,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		channel := word.StringPermutations(query)
 		for p := range channel {
-			if valid, err := e.WordIsValid(p); !valid || err != nil {
-				if err != nil {
-					ae.Errorf("%v", err)
-				}
+			if valid := e.WordIsValid(p); !valid {
 				continue
 			}
 			context.Permutations = append(context.Permutations, p)

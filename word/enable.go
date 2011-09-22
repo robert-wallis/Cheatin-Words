@@ -7,34 +7,15 @@ import (
 
 // ***************************************************************************
 
-type WordList struct {
-	words []string
-}
-
-func (p *WordList) Append(word string) {
-	p.words = append(p.words, word)
-}
-
-func (p *WordList) WordInList(word string) bool {
-	for _, w := range p.words {
-		if w == word {
-			return true
-		}
-	}
-	return false
-}
-
-// ***************************************************************************
-
 type Enable struct {
-	mapWords map[int]WordList
+	mapWords map[string]bool
 	filename string
 }
 
 // find at what seek point all the letters start
-func (p *Enable) Load(filename string) (os.Error) {
+func (p *Enable) Load(filename string) os.Error {
 	p.filename = filename
-	p.mapWords = make(map[int]WordList, 26)
+	p.mapWords = make(map[string]bool, 26)
 	stream, err := os.OpenFile(p.filename, os.O_RDONLY, 0)
 	defer stream.Close()
 	if err != nil {
@@ -72,23 +53,17 @@ func (p *Enable) Load(filename string) (os.Error) {
 }
 
 func (p *Enable) AddWord(word string) {
-	unicodeWord := []int(string(word)) // use []int instead of []byte to make unicode
-	wl := p.mapWords[unicodeWord[0]]
-	wl.Append(word)
-	p.mapWords[unicodeWord[0]] = wl
+	p.mapWords[word] = true
 }
 
 
 // is this word in the Enable dictionary?
-func (p *Enable) WordIsValid(query string) (bool, os.Error) {
+func (p *Enable) WordIsValid(query string) bool {
 	if len(query) == 0 {
-		return false, nil
+		return false
 	}
-	unicodeQuery := []int(query)
-	thisChar := unicodeQuery[0]
-	if p.mapWords == nil {
-		return false, os.NewError(fmt.Sprintf("dicationary not loaded, enable needs Init() %q", p))
+	if _, inMap := p.mapWords[query]; !inMap {
+		return false
 	}
-	wl := p.mapWords[thisChar]
-	return wl.WordInList(query), nil
+	return true
 }
