@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var enableFilename = "../static/enable.txt"
+var enableFilename = "../enable.txt"
 
 var validWords = []string{
 	// regular words

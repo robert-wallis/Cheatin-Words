@@ -4,23 +4,51 @@
 	<link href="default.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-	<h1>cheatin' words</h1>
-	<h2>search results for &quot;{Q|html}&quot;</h2>
-	{.section Permutations}
-	<div id="results">
-		<ul>
-		{.repeated section @}
-			<li>{@}</li>
+<div class="body searchPage">
+	<div class="rightColumn">
+		<script type="text/javascript"><!--
+		google_ad_client = "ca-pub-3528565529581310";
+		/* cheatin-words-skyscraper */
+		google_ad_slot = "3178774631";
+		google_ad_width = 160;
+		google_ad_height = 600;
+		//-->
+		</script>
+		<script type="text/javascript"
+		src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+		</script>
+	</div>
+	
+	<div class="leftColumn">
+		<a href="/"><h1>cheatin' words</h1></a>
+
+		{.section Permutations}
+		<a name="results">
+		<h2>words that can be made from the tiles &quot;{Q|html}&quot;</h2>
+		</a>
+		<section class="results">
+			<ul>
+			{.repeated section @}
+				<li>{@}</li>
+			{.end}
+			</ul>
+		</section>
 		{.end}
-		</ul>
-	</div>
-	{.end}
-
-	<div class="query">
-		<form action="/search">
-			<input type="search" name="q" autofocus>
-			<input type="submit">
-		</form>
+		<section class="query">
+			<form action="/search#results">
+				<input type="input" name="q" maxlength="8" size="8" value="{Q|html}" autofocus>
+				<input type="submit" value="search">
+			</form>
+		</section>
 	</div>
 
+	<div style="clear: both;"></div>
+
+	<footer>
+	Cheatin' Words&trade; is an experiment by <a href="https://plus.google.com/100955196044884930812/about">Robert</a> written in <a href="http://golang.org/">golang</a> for <a href="http://code.google.com/appengine/docs/go/overview.html">Google App Engine</a>.
+	<div class="legal">
+	Although this site helps you cheat at some popular word games. Scrabble&reg; is a registered trademark of Hasbro Inc. and Words with Friends&reg; is a registered trademark of Zynga.  Neither company have any affilliation with us. Carry on then.
+	</div>
+	</footer>
+</div>
 </body>

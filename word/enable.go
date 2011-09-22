@@ -8,14 +8,15 @@ import (
 // ***************************************************************************
 
 type Enable struct {
-	mapWords map[string]bool
+	// using a map for O(1) lookups
+	mapWords map[string]uint8
 	filename string
 }
 
 // find at what seek point all the letters start
 func (p *Enable) Load(filename string) os.Error {
 	p.filename = filename
-	p.mapWords = make(map[string]bool, 26)
+	p.mapWords = make(map[string]uint8, 26)
 	stream, err := os.OpenFile(p.filename, os.O_RDONLY, 0)
 	defer stream.Close()
 	if err != nil {
@@ -53,7 +54,7 @@ func (p *Enable) Load(filename string) os.Error {
 }
 
 func (p *Enable) AddWord(word string) {
-	p.mapWords[word] = true
+	p.mapWords[word] = 1
 }
 
 

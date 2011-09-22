@@ -4,13 +4,26 @@
 	<link rel="stylesheet" href="/default.css" type="text/css" media="screen" charset="utf-8">
 </head>
 <body>
-	<h1>cheatin' words</h1>
+<div class="body indexPage">
+	<a href="/"><h1>cheatin' words</h1></a>
 
-	<div class="query">
+	<section class="query">
 		<form action="/search">
-			<input type="search" name="q" autofocus>
-			<input type="submit">
+			<input type="input" name="q" maxlength="8" size="10" autofocus>
+			<input type="submit" value="search">
 		</form>
-	</div>
+	</section>
 
+	<section>
+		<p>Getting tired of playing Scrabble&reg; or Words with Friends&trade; and all your friends beating you?  Psst, I have a secret: <span class="highlight">they're cheating</span>.  On second thought, you really shouldn't search for all the words you can make from the tiles you have.  That's just not fair to your friend.</p>
+		<p>Yeah, you're no cheater.  Don't search for any words up there.  Bye bye.</p>
+	</section>
+	
+	<footer>
+	Cheatin' Words&trade; is an experiment by <a href="https://plus.google.com/100955196044884930812/about">Robert</a> written in <a href="http://golang.org/">golang</a> for <a href="http://code.google.com/appengine/docs/go/overview.html">Google App Engine</a>.
+	<div class="legal">
+	Scrabble&reg; is a registered trademark of Hasbro Inc., Words with Friends&reg; is a registered trademark of Zynga.  Neither company has any affilliation with the creators of this website. Carry on then.
+	</div>
+	</footer>
+</div>
 </body>

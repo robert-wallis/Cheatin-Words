@@ -1,10 +1,111 @@
+/*
+ * pallete http://www.colourlovers.com/palette/1769560/chocolate_cranperry
+ * #6F512F Hershey's Milk
+ * #A57D5A Lion Cut Face
+ * #D29D7B Tanned
+ * #E7767C cranperry
+ * #FCBEBF de
+ */
+
 h1, h2, h3, h4, h5, h6, body, div, span, td, tr, th {
-	font-family: "Helvetica Neue" Helvetica Arial sans;
+	font-family: serif;
 	font-weight: normal;
+	margin: 0;
+	padding: 0;
+	line-height: 1em;
 }
 h1, h2, h3, h4, h5, h6, ul, ol, li {
 	padding: 0;
 	margin: 0;
 }
+h1 {
+	font-size: 65pt;
+	color: #A57D5A;
+	font-family: serif;
+}
+a:hover h1 {
+	color: #D29D7B;
+}
+h2 {
+	font-size: 19pt;
+	color: #E7767C;
+}
 body {
+	background: #E5E5E5;
+	color: #6F512F;
+	font-size: 15pt;
+}
+a {
+	color: #6F512F;
+	text-decoration: none;
+}
+a:hover {
+	color: #E7767C;
+	text-decoration: underline;
+}
+footer {
+	font-size: 14pt;
+	color: #A57D5A;
+	padding: 20px 0px 0px 0px;
+}
+footer .legal {
+	padding-top: 10px;
+	color: #999;
+	font-size: 11pt;
+}
+.body {
+	padding: 10px;
+	width: 700px;
+	margin: 50px auto;
+	background-color: #EEE;
+}
+
+.highlight {
+	color: #E7767C;
+}
+
+/* application */
+.query {
+	clear: both;
+}
+.query input {
+	font-family: serif;
+	font-size: 15pt;
+	color: #6F512F;
+}
+.leftColumn {
+	float: left;
+	width: 540px;
+}
+.rightColumn {
+	float: right;
+	width: 160px;
+	height: 600px;
+}
+
+/* index page */
+
+/* search page */
+.searchPage h1 {
+	cursor: pointer;
+}
+.results {
+	float: left;
+	padding: 20px 0;
+}
+.results ul {
+	float: left;
+	padding: 5px;
+	margin: 5px;
+	border: dashed 1px #FCBEBF;
+}
+.results li {
+	float: left;
+	display: inline;
+	padding: 7px;
+	margin: 0;
+}
+.results li:hover {
+	color: #333;
+	background-color: #FCBEBF;
 }
