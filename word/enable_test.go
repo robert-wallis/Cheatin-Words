@@ -11,8 +11,8 @@ var validWords = []string{
 	"abacus",
 	"ball",
 	"zygote",
-	"a",        // first word ever
-	"zyzzyvas", // last word ever
+	"aa",       // first word
+	"zyzzyvas", // last word
 }
 
 var invalidWords = []string{
