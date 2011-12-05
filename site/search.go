@@ -7,11 +7,12 @@ import (
 	"log"
 	"os"
 	"strings"
+	"template"
 	"word"
 )
 
 type Search struct {
-	Filename     string
+	T			*template.Template
 	Q            string
 	Permutations []string
 }
@@ -20,6 +21,13 @@ var enable *word.Enable
 var enablePath = "enable.txt"
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
+	context := &Search{}
+	// prepare the template
+	t, err := template.ParseFile("template/search.html")
+	if err != nil {
+		http.Error(w, err.String(), http.StatusInternalServerError)
+	}
+	context.T = t
 	ae := appengine.NewContext(r)
 	query := r.FormValue("q")
 	queryLength := len([]int(query)) // unicode length
@@ -34,12 +42,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, fmt.Sprintf("search?q=%s", strings.ToLower(query)), 302)
 		return
 	}
+	context.Q = query
 
-	context := &Search{
-		Filename:     "template/search.html",
-		Q:            query,
-		Permutations: make([]string, 0),
-	}
 	hashTable := make(map[string]byte, 0)
 
 	if 0 != queryLength {
@@ -63,7 +67,10 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	TemplateRender(w, context.Filename, context)
+	// display template
+	if err := context.T.Execute(w, context); err != nil {
+		http.Error(w, err.String(), http.StatusInternalServerError)
+	}
 }
 
 // ensure this instance has the Enable dictionary loaded

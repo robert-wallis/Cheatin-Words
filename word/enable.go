@@ -22,7 +22,7 @@ func (p *Enable) Load(filename string) os.Error {
 	if err != nil {
 		return os.NewError(fmt.Sprintf("failed to load dictionary %q", err))
 	}
-	p.words = bytes.Split(data, []byte("\n"), -1)
+	p.words = bytes.Split(data, []byte("\n"))
 	return nil
 }
 

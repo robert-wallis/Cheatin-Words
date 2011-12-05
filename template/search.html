@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>{Q|html} | cheatin' words</title>
+	<title>{{.Q|html}} | cheatin' words</title>
 	<link href="default.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -21,22 +21,23 @@
 	
 	<div class="leftColumn">
 		<a href="/"><h1>cheatin' words</h1></a>
-
-		{.section Permutations}
 		<a name="results">
-		<h2>words that can be made from the tiles &quot;{Q|html}&quot;</h2>
+			<h2>{{.Permutations|len}} words that can be made from the tiles &quot;{{.Q|html}}&quot;</h2>
 		</a>
+		{{if .Permutations}}
 		<section class="results">
 			<ul>
-			{.repeated section @}
-				<li>{@}</li>
-			{.end}
+				{{range .Permutations}}
+				<li>{{.}}</li>
+				{{end}}
 			</ul>
 		</section>
-		{.end}
+		{{else}}
+		<p>Sorry but no words can be made from those titles.</p>
+		{{end}}
 		<section class="query">
 			<form action="/search#results">
-				<input type="input" name="q" maxlength="8" size="8" value="{Q|html}" autofocus>
+				<input type="input" name="q" maxlength="8" size="8" value="{{.Q|html}}" autofocus>
 				<input type="submit" value="search">
 			</form>
 		</section>
