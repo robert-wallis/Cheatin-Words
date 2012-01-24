@@ -101,14 +101,18 @@ func StringPermutationsSub(s string, r int) chan string {
 				cycles[i] = cycles[i] - 1
 				if cycles[i] == 0 {
 					// time for a new cycle
-					newindices := make([]int, i)
+					newindices_size := len(indices) - 1
+					if i > newindices_size {
+						newindices_size = i
+					}
+					newindices := make([]int, newindices_size+1)
 					for k := 0; k < i; k++ {
 						newindices[k] = indices[k]
 					}
-					for k := i + 1; k < len(indices); k++ {
-						newindices = append(newindices, indices[k])
+					for k := i; k < len(indices)-1; k++ {
+						newindices[k] = indices[k+1]
 					}
-					newindices = append(newindices, indices[i])
+					newindices[newindices_size] = indices[i]
 					indices = newindices
 					cycles[i] = n - i
 				} else {
