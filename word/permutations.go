@@ -80,9 +80,9 @@ func StringPermutationsSub(s string, r int) chan string {
 		for i := 0; i < n; i++ {
 			indices[i] = i
 		}
-		cycles := []int{}
+		cycles := make([]int, r)
 		for i := n; i > n-r; i-- {
-			cycles = append(cycles, i)
+			cycles[n-i] = i
 		}
 		endOfCycles := make([]int, len(cycles))
 		copy(endOfCycles, cycles)
@@ -93,9 +93,9 @@ func StringPermutationsSub(s string, r int) chan string {
 		}
 		out <- string(sout)
 		for n > 0 {
-			reversedRangeR := []int{}
-			for i := r - 1; i >= 0; i-- {
-				reversedRangeR = append(reversedRangeR, i)
+			reversedRangeR := make([]int, r)
+			for j, i := r - 1, 0; j >= 0; j, i = j-1, i+1 {
+				reversedRangeR[i] = j
 			}
 			for _, i := range reversedRangeR {
 				cycles[i] = cycles[i] - 1
